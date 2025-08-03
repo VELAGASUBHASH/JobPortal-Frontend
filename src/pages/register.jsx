@@ -9,19 +9,18 @@ const Register = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (data) => {
-    setLoading(true);
-    const result = await registerUser({
-      name: data.name,
-      email: data.email,
-      password: data.password
-    });
-    setLoading(false);
-    if (result.success) {
-      // Redirect to email verification page
-      navigate('/verify-email');
-    }
-  };
+const onSubmit = async (data) => {
+  setLoading(true);
+  const result = await registerUser({
+    name: data.name,
+    email: data.email,
+    password: data.password
+  });
+  setLoading(false);
+  if (result.success) {
+    navigate('/verify-email', { state: { email: data.email } }); // Pass email to next page
+  }
+};
 
   return (
     <div className="max-w-md mx-auto mt-24 p-8 bg-white rounded-lg shadow-md">
