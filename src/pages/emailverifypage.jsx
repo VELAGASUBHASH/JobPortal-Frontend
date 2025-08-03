@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Component/auth.jsx';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const EmailVerifyPage = () => {
   const { verifyEmail } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
+  // Pre-fill email from navigation state
+  useEffect(() => {
+    if (location.state?.email) {
+      setEmail(location.state.email);
+    }
+  }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +26,6 @@ const EmailVerifyPage = () => {
     setLoading(false);
 
     if (result.success) {
-      // Redirect to home page after successful verification
       navigate('/');
     }
   };
@@ -36,9 +44,8 @@ const EmailVerifyPage = () => {
             id="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            readOnly
+            className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 cursor-not-allowed"
           />
         </div>
 
@@ -52,7 +59,7 @@ const EmailVerifyPage = () => {
             required
             maxLength={6}
             value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} // only digits allowed
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             placeholder="123456"
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
